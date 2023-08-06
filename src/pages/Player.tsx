@@ -3,16 +3,18 @@ import { useEffect } from "react";
 import { Header } from "../components/Header";
 import { Module } from "../components/Module";
 import { Video } from "../components/Video";
-import { useAppDispatch, useAppSelector } from "../store";
-import { loadCourse, useCurrentLesson } from "../store/slices/player";
+import { useCurrentLesson, useStore } from "../zustand-store";
 
 export function Player() {
-  const modules = useAppSelector((state) => state.player.course?.modules);
-  const dispatch = useAppDispatch();
+  const { course, load } = useStore((store) => ({
+    course: store.course,
+    load: store.load,
+  }));
+
   const { currentLesson } = useCurrentLesson();
 
   useEffect(() => {
-    dispatch(loadCourse(1));
+    load();
   }, []);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export function Player() {
           </div>
 
           <aside className="absolute top-0 bottom-0 right-0 overflow-y-scroll border-l divide-y-2 divide-zinc-900 w-80 border-zinc-800 bg-zinc-900 scrollbar-thin scrollbar-track-zinc-950 scrollbar-thumb-zinc-800">
-            {modules?.map((module, index) => (
+            {course?.modules?.map((module, index) => (
               <Module
                 key={module.id}
                 moduleIndex={index}
